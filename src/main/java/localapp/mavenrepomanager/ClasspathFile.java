@@ -60,7 +60,7 @@ public final class ClasspathFile {
     }
 
     /**
-     * 
+     * Gets the map of classpath entries organized by "kind"
      * @return a map that is indexed by entry kind corresponding
      * to the content of the "kind" attribute. The List<String> returned is a list
      * of the contents of the "path" attribute for all the entries of the key kind.
