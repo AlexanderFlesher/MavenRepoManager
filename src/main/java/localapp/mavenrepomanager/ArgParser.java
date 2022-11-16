@@ -1,7 +1,6 @@
 package localapp.mavenrepomanager;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  * Class containing the static methods for parsing the command-line arguments.
  */
-public class ArgParser {
+public final class ArgParser {
     public static final String OPTIONAL_OUTPUT_NAME_SWITCH = "-o";
     public static final String REQUIRED_CLASSPATH_PATH_SWITCH = "-i";
     public static final String REQUIRED_REPO_NAME_SWITCH = "-n";
@@ -56,7 +55,7 @@ public class ArgParser {
         if (isSwitchCharacter(outputArg))
             throwEmptyArgument(outputArg);
         out = new File(outputArg);
-        if (Files.isDirectory(out.toPath())){
+        if (out.isDirectory()){
             if (!out.exists())
                 throwDirectoryDoesNotExist();
         }
@@ -87,7 +86,7 @@ public class ArgParser {
         if (!hasOptionalArgs(args))
             return "";
         out = new File(getArgumentText(args, OPTIONAL_OUTPUT_NAME_SWITCH));
-        if (Files.isDirectory(out.toPath())){
+        if (out.isDirectory()){
             name = RunSettings.DEFAULT_OUTPUT_NAME;
             path = out.toPath().toString();
         }

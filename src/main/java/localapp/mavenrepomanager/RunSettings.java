@@ -3,7 +3,7 @@ package localapp.mavenrepomanager;
 /**
  * Object to track the file paths and names used to generate a maven repository.
  */
-public class RunSettings {
+public final class RunSettings {
     /**The default name of the pom dependencies xml */
     public static final String DEFAULT_OUTPUT_NAME = "pomdeps.xml";
     
