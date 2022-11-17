@@ -1,6 +1,7 @@
 package localapp.mavenrepomanager;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,6 +26,24 @@ public class DirNodeTest {
         DirNode child = new DirNode("child");
         parent.addChild(child);
         Assert.assertEquals(parent, child.getParent());
+    }
+
+    @Test
+    public void getLeafNodes_shouldReturnChildlessNodes(){
+        final int EXPECTED_LENGTH = 2;
+        DirNode parent = new DirNode("parent");
+        DirNode child1 = new DirNode("child1");
+        DirNode child2 = new DirNode("child2");
+        DirNode child3 = new DirNode("child3");
+        parent.addChild(child1);
+        parent.addChild(child2);
+        child2.addChild(child3);
+        List<DirNode> leaves = parent.getLeafNodes();
+        Assert.assertEquals(EXPECTED_LENGTH, leaves.size());
+        Assert.assertTrue(leaves.contains(child1));
+        Assert.assertTrue(leaves.contains(child3));
+        Assert.assertFalse(leaves.contains(child2));
+        Assert.assertFalse(leaves.contains(parent));
     }
 
     @Test

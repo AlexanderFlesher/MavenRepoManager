@@ -1,5 +1,7 @@
 package localapp.mavenrepomanager;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,12 +22,12 @@ public final class DirNode{
 
     public DirNode(String name){
         this();
-        setName(name);
+        this.setName(name);
     }
 
     public DirNode(String name, DirNode parent){
         this(name);
-        setParent(parent);
+        this.setParent(parent);
     }
 
     /**
@@ -46,10 +48,39 @@ public final class DirNode{
     }
 
     /**
+     * @return all linked DirNodes that do not have children.
+     */
+    public List<DirNode> getLeafNodes(){
+        List<DirNode> leaves = new ArrayList<>();
+        if (!this.hasChildren())
+            leaves.add(this);
+        else {
+            for (DirNode child : this.getChildren()){
+                leaves.addAll(child.getLeafNodes());
+            }
+        }
+        return leaves;
+    }
+
+    /**
+     * @return this DirNode's name.
+     */
+    public String getName(){
+        return this.name;
+    }
+
+    /**
      * @return returns the parent of this DirNode.
      */
     public DirNode getParent(){
         return this.parent;
+    }
+
+    /**
+     * @return true if this Node has child Nodes, false otherwise.
+     */
+    public boolean hasChildren(){
+        return !this.getChildren().isEmpty();
     }
 
     /**
@@ -67,13 +98,6 @@ public final class DirNode{
     public void removeChild(DirNode child){
         children.remove(child);
         child.setParent(null);
-    }
-
-    /**
-     * @return this DirNode's name.
-     */
-    public String getName(){
-        return this.name;
     }
 
     /**
@@ -97,6 +121,18 @@ public final class DirNode{
         String first = stringPath.get(0);
         List<String> next = stringPath.subList(1, stringPath.size());
         return Path.of(first, next.toArray(new String[next.size()]));
+    }
+
+    /**
+     * Attempts to create the directory corresponding to this Node, including all
+     * parent directories.
+     */
+    public void tryWriteDirectory(){
+        try {
+            Files.createDirectories(this.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<String> getStringPath(){
