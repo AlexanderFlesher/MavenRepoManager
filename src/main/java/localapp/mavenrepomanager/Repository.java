@@ -33,8 +33,8 @@ public final class Repository {
         classpathEntries.add(entry);
     }
 
-    public void addEntry(String artifact, String group, String version){
-        addEntry(new Entry(artifact, group, version));
+    public void addEntry(String artifact, String group, String version, String filename){
+        addEntry(new Entry(artifact, group, version, filename));
     }
 
     public String getName(){
@@ -45,8 +45,8 @@ public final class Repository {
         classpathEntries.remove(entry);
     }
 
-    public void removeEntry(String artifact, String group, String version){
-        removeEntry(new Entry(artifact, group, version));
+    public void removeEntry(String artifact, String group, String version, String filename){
+        removeEntry(new Entry(artifact, group, version, filename));
     }
 
     /**
@@ -61,14 +61,24 @@ public final class Repository {
 
     /**
      * Writes this Repository directory structure to filesystem.
-     * Also writes the required metadata files to the repository.
+     * Also writes the required metadata files and copies the dependencies
+     * to the repository.
      * @throws IOException
      */
     public void write() throws IOException{
         DirNode root = new DirNode(name);
         Metadata[] metadata = getEntryDataAndPopulateNodes(root);
         writeDirectories(root);
-        writeMetadata(metadata);
+        copyFiles(metadata);
+    }
+
+    private void copyFiles(Metadata[] metadata) throws IOException {
+        for (int i = 0; i < metadata.length; i++){
+            Metadata data = metadata[i];
+            Entry entry = this.classpathEntries.get(i);
+            data.write();
+            entry.getDependency().copyTo(Path.of(name, entry.getDependencyLocation().toString()));
+        }
     }
 
     private Metadata[] getEntryDataAndPopulateNodes(DirNode root) {
@@ -85,12 +95,6 @@ public final class Repository {
     private void writeDirectories(DirNode root) {
         for (DirNode entry : root.getLeafNodes()){
             entry.tryWriteDirectory();
-        }
-    }
-
-    private void writeMetadata(Metadata[] metadata) throws IOException {
-        for (Metadata data : metadata){
-            data.write();
         }
     }
 }

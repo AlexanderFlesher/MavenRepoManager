@@ -7,16 +7,27 @@ import java.nio.file.Path;
  * a groupId, and a version number.
  */
 public final class Entry{
+    public enum Option{
+        /**No options selected. Method will function normally. */
+        NONE,
+        /**Debug selected, which will ignore IllegalArgumentException when trying
+         * to parse files that do not exist. Use this for testing purposes.
+         */
+        DEBUG
+    }
+
     public static final String DEFAULT_VERSION = "1.0";
 
     private String artifact;
     private String group;
     private String version;
+    private Dependency dependency;
 
-    public Entry(String artifact, String group, String version){
+    public Entry(String artifact, String group, String version, String filename){
         this.artifact = artifact;
         this.group = group;
         this.version = version;
+        this.dependency = new Dependency(filename);
     }
 
     /**
@@ -31,7 +42,26 @@ public final class Entry{
         version = parseVersion(file.toString());
         artifact = parseArtifact(file.toString(), version);
         group = artifact;
-        return new Entry(artifact, group, version);
+        return new Entry(artifact, group, version, filename);
+    }
+
+    /**
+     * Creates a Entry based on the filename from the classpath entry. Will
+     * attempt to get the version from the filename. 
+     * @param filename
+     * @return an Entry based on the filename from the classpath entry.
+     */
+    public static Entry from(String filename, Entry.Option option){
+        if (option == Option.DEBUG){
+            try {
+                return from(filename);
+            }
+            catch (IllegalArgumentException ex){
+                return debugFrom(filename, "./");        
+            }
+        }
+        else 
+            return from(filename);
     }
 
     @Override
@@ -41,6 +71,14 @@ public final class Entry{
 
     public String getArtifact(){
         return this.artifact;
+    }
+
+    public Dependency getDependency(){
+        return this.dependency;
+    }
+
+    public Path getDependencyLocation(){
+        return Path.of(getMetadataLocation().toString(), this.version);
     }
 
     public String getGroup(){
@@ -69,9 +107,10 @@ public final class Entry{
 
     @Override
     public int hashCode() {
-        return (17 * artifact.hashCode()) 
-            + (17 * group.hashCode())
-            + (17 * version.hashCode());
+        return (17 * this.artifact.hashCode()) 
+            + (17 * this.group.hashCode())
+            + (17 * this.version.hashCode())
+            + (17 * this.dependency.hashCode());
     }
 
     /**
@@ -100,6 +139,15 @@ public final class Entry{
 
     private static boolean beginsWithNumber(String s){
         return s.charAt(0) >= '0' && s.charAt(0) <= '9';
+    }
+
+    private static Entry debugFrom(String filename, String defaultFilename){
+        String artifact, group, version;
+        Path file = Path.of(filename).getFileName();
+        version = parseVersion(file.toString());
+        artifact = parseArtifact(file.toString(), version);
+        group = artifact;
+        return new Entry(artifact, group, version, defaultFilename);
     }
 
     private static String parseArtifact(String name, String version){

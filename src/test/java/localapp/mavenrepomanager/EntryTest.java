@@ -5,12 +5,14 @@ import java.nio.file.Path;
 import org.junit.Assert;
 import org.junit.Test;
 
+import localapp.mavenrepomanager.Entry.Option;
+
 public class EntryTest {
     @Test
     public void from_shouldParse_withoutVersion() {
         final String NAME = "test-library";
         final String PATH = "/path/to/library/" + NAME + ".jar";
-        Entry entry = Entry.from(PATH);
+        Entry entry = Entry.from(PATH, Option.DEBUG);
         Assert.assertEquals(NAME, entry.getArtifact());
         Assert.assertEquals(NAME, entry.getGroup());
         Assert.assertEquals(Entry.DEFAULT_VERSION, entry.getVersion());
@@ -21,17 +23,38 @@ public class EntryTest {
         final String NAME = "test-library";
         final String VERS = "2.3.5";
         final String PATH = "/path/to/library/" + NAME + "-" + VERS + ".jar";
-        Entry entry = Entry.from(PATH);
+        Entry entry = Entry.from(PATH, Option.DEBUG);
         Assert.assertEquals(NAME, entry.getArtifact());
         Assert.assertEquals(NAME, entry.getGroup());
         Assert.assertEquals(VERS, entry.getVersion());
+    }
+ 
+    @Test
+    public void getDependencyLocation_hasCorrectStructure_simpleGroup(){
+        final String ARTIFACT = "artifact";
+        final String GROUP = "group";
+        final String VERSION = "1.4";
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Path path = entry.getDependencyLocation();
+        Assert.assertEquals(Path.of(GROUP, ARTIFACT, VERSION), path);
+    }
+
+    @Test
+    public void getDependencyLocation_hasCorrectStructure_complicatedGroup(){
+        final String ARTIFACT = "artifact";
+        final String GROUP = "com.complicated.group";
+        final String VERSION = "1.4";
+        final String[] SPLIT = GROUP.split("\\.");
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Path path = entry.getDependencyLocation();
+        Assert.assertEquals(Path.of(SPLIT[0], SPLIT[1], SPLIT[2], ARTIFACT, VERSION), path);
     }
 
     @Test
     public void getMetadataLocation_hasCorrectStructure_simpleGroup(){
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
-        Entry entry = new Entry(ARTIFACT, GROUP, "1.0");
+        Entry entry = new Entry(ARTIFACT, GROUP, "1.0", "./");
         Path path = entry.getMetadataLocation();
         Assert.assertEquals(Path.of(GROUP, ARTIFACT), path);
     }
@@ -41,7 +64,7 @@ public class EntryTest {
         final String ARTIFACT = "artifact";
         final String GROUP = "com.complicated.group";
         final String[] SPLIT = GROUP.split("\\.");
-        Entry entry = new Entry(ARTIFACT, GROUP, "1.0");
+        Entry entry = new Entry(ARTIFACT, GROUP, "1.0", "./");
         Path path = entry.getMetadataLocation();
         Assert.assertEquals(Path.of(SPLIT[0], SPLIT[1], SPLIT[2], ARTIFACT), path);
     }
@@ -51,7 +74,7 @@ public class EntryTest {
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
         final String VERSION = "1.4";
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION);
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
         DirNode node = entry.toNode();
         Assert.assertEquals(GROUP, node.getName());
         Assert.assertEquals(ARTIFACT, node.getChildren().get(0).getName());
@@ -64,7 +87,7 @@ public class EntryTest {
         final String GROUP = "com.complicated.group";
         final String VERSION = "1.4";
         final String[] SPLIT = GROUP.split("\\.");
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION);
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
         DirNode node = entry.toNode();
         Assert.assertEquals(SPLIT[0], node.getName());
         node = next(node);
