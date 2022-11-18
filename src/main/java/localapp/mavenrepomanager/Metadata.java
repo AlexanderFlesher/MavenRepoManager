@@ -32,7 +32,7 @@ public class Metadata {
     public final static String DEFAULT_NAME = "maven-metadata-local.xml";
     public final String filename;
     private Document document;
-    private Repository.Entry entry;
+    private Entry entry;
     private Path location;
 
     /**
@@ -42,7 +42,7 @@ public class Metadata {
      * @throws IllegalArgumentException when the given location is a filename or 
      * does not exist.
      */
-    public Metadata(Repository.Entry entry, Path location) throws IllegalArgumentException{
+    public Metadata(Entry entry, Path location) throws IllegalArgumentException{
         this.entry = entry;
         this.location = location;
         validateLocation(location);
@@ -50,7 +50,7 @@ public class Metadata {
     }
 
     /**
-     * @return the completed XML document representing the associated {@code Repository.Entry}
+     * @return the completed XML document representing the associated {@code Entry}
      * data.
      */
     public Document getDocument(){

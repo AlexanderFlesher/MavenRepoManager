@@ -9,14 +9,14 @@ import org.w3c.dom.NodeList;
 public class MetadataTest {
     @Test
     public void metadata_shouldExcept_whenFilenameGiven(){
-        Repository.Entry entry = new Repository.Entry("x", "y", "z");
+        Entry entry = new Entry("x", "y", "z");
         Path invalidPath = Path.of("/path/to/file.xml");
         Assert.assertThrows(IllegalArgumentException.class, () -> new Metadata(entry, invalidPath));
     }
 
     @Test
     public void metadata_shouldExcept_whenBlankPathGiven(){
-        Repository.Entry entry = new Repository.Entry("x", "y", "z");
+        Entry entry = new Entry("x", "y", "z");
         Path invalidPath = Path.of("");
         Assert.assertThrows(IllegalArgumentException.class, () -> new Metadata(entry, invalidPath));
     }
@@ -24,7 +24,7 @@ public class MetadataTest {
     @Test
     public void filename_shouldPopulateWithPath(){
         final String PATH = "./";
-        Repository.Entry entry = new Repository.Entry("x", "y", "z");
+        Entry entry = new Entry("x", "y", "z");
         Path path = Path.of(PATH);
         Metadata metadata = new Metadata(entry, path);
         Assert.assertEquals(PATH + Metadata.DEFAULT_NAME, metadata.filename);
@@ -35,7 +35,7 @@ public class MetadataTest {
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
         final String VERSION = "1.4";
-        Repository.Entry entry = new Repository.Entry(ARTIFACT, GROUP, VERSION);
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION);
         Metadata metadata = new Metadata(entry, Path.of("./"));
         NodeList children = metadata.getDocument().getDocumentElement().getChildNodes();
         NodeList versionChildren = children.item(2).getChildNodes();
