@@ -1,5 +1,7 @@
 package localapp.mavenrepomanager;
 
+import java.nio.file.Path;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,6 +25,25 @@ public class EntryTest {
         Assert.assertEquals(NAME, entry.getArtifact());
         Assert.assertEquals(NAME, entry.getGroup());
         Assert.assertEquals(VERS, entry.getVersion());
+    }
+
+    @Test
+    public void getMetadataLocation_hasCorrectStructure_simpleGroup(){
+        final String ARTIFACT = "artifact";
+        final String GROUP = "group";
+        Entry entry = new Entry(ARTIFACT, GROUP, "1.0");
+        Path path = entry.getMetadataLocation();
+        Assert.assertEquals(Path.of(GROUP, ARTIFACT), path);
+    }
+
+    @Test
+    public void getMetadataLocation_hasCorrectStructure_complicatedGroup(){
+        final String ARTIFACT = "artifact";
+        final String GROUP = "com.complicated.group";
+        final String[] SPLIT = GROUP.split("\\.");
+        Entry entry = new Entry(ARTIFACT, GROUP, "1.0");
+        Path path = entry.getMetadataLocation();
+        Assert.assertEquals(Path.of(SPLIT[0], SPLIT[1], SPLIT[2], ARTIFACT), path);
     }
 
     @Test

@@ -47,6 +47,22 @@ public final class Entry{
         return this.group;
     }
 
+    /**
+     * @return the relative path to where the metadata corresponding to this entry 
+     * should be written.
+     */
+    public Path getMetadataLocation(){
+        String first;
+        String[] split = splitGroup();
+        String[] next = new String[split.length];
+        first = split[0];
+        for (int i = 0; i < split.length - 1; i++){
+            next[i] = split[i + 1];
+        }
+        next[next.length - 1] = this.artifact;
+        return Path.of(first, next);
+    }
+
     public String getVersion(){
         return this.version;
     }
@@ -65,24 +81,17 @@ public final class Entry{
      * Maven repository.
      */
     public DirNode toNode(){
-        DirNode node = null, next;
-        String[] split = this.group.split("\\.");
-        split = split.length == 0 ? new String[]{this.group} : split;
+        DirNode node = null;
+        String[] split = splitGroup();
         for (String s : split){
             if (node == null)
                 node = new DirNode(s);
             else {
-                next = new DirNode(s, node);
-                node = next;
+                node = new DirNode(s, node);
             }
         }
-
-        next = new DirNode(this.artifact, node);
-        node = next;
-
-        next = new DirNode(this.version, node);
-        node = next;
-
+        node = new DirNode(this.artifact, node);
+        node = new DirNode(this.version, node);
         while (node.hasParent())
             node = node.getParent();
 
@@ -104,5 +113,10 @@ public final class Entry{
                 return split[split.length - 1].replace(".jar", "");
         }
         return DEFAULT_VERSION;
+    }
+
+    private String[] splitGroup() {
+        String[] split = this.group.split("\\.");
+        return split.length == 0 ? new String[]{this.group} : split;
     }
 }
