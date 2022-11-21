@@ -70,7 +70,7 @@ public final class ArgParser {
     private static void checkRequiredArgs(List<String> args){
         if (!getMissingArgs(args).isEmpty()){
             String argumentList = "";
-            for (String arg : args){
+            for (String arg : getMissingArgs(args)){
                 argumentList += arg + ", ";
             }
             throw new IllegalArgumentException(

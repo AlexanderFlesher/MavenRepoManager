@@ -6,6 +6,8 @@ import java.nio.file.Path;
  * Object to track the file paths and names used to generate a maven repository.
  */
 public final class RunSettings {
+    /**Blank RunSettings */
+    public static final RunSettings BLANK_SETTINGS = new RunSettings(Path.of(""), "", Path.of(""));
     /**The default name of the pom dependencies xml */
     public static final String DEFAULT_OUTPUT_NAME = "pomdeps.xml";
     
