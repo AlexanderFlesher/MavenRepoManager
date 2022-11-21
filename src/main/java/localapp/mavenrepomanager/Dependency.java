@@ -33,8 +33,10 @@ public class Dependency {
      * @throws IOException
      */
     public void copyTo(Path destination) throws IOException{
+        Path newfile = Path.of(destination.toString(), 
+            this.dependencyFile.toPath().getFileName().toString());
         try (FileReader reader = new FileReader(this.dependencyFile)){
-            try (FileWriter writer = new FileWriter(destination.toFile())){
+            try (FileWriter writer = new FileWriter(newfile.toFile())){
                 while (reader.ready()){
                     writer.write(reader.read());
                 }

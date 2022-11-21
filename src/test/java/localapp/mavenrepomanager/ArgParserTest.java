@@ -1,5 +1,7 @@
 package localapp.mavenrepomanager;
 
+import java.nio.file.Path;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,10 +33,13 @@ public class ArgParserTest {
         final String PATH = "repo path";
         String[] input = {"-i", INPUT, "-n", REPO, "-p", PATH};
         RunSettings settings = ArgParser.parse(input);
-        Assert.assertEquals(INPUT, settings.classpathFilePath);
+        Assert.assertEquals(Path.of(INPUT).toAbsolutePath().toString(), 
+            settings.classpathFilePath.toString());
         Assert.assertEquals(REPO, settings.repoName);
-        Assert.assertEquals(PATH, settings.repoPath);
-        Assert.assertEquals(RunSettings.DEFAULT_OUTPUT_NAME, settings.dependencyXmlName);
+        Assert.assertEquals(Path.of(PATH).toAbsolutePath().toString(), 
+            settings.repoPath.toString());
+        Assert.assertEquals(Path.of(RunSettings.DEFAULT_OUTPUT_NAME).toAbsolutePath().toString(), 
+            settings.dependencyXmlName.toString());
     }
 
     @Test
@@ -44,10 +49,13 @@ public class ArgParserTest {
         final String PATH = "repo path";
         String[] input = {"-n", REPO, "-i", INPUT, "-p", PATH};
         RunSettings settings = ArgParser.parse(input);
-        Assert.assertEquals(INPUT, settings.classpathFilePath);
+        Assert.assertEquals(Path.of(INPUT).toAbsolutePath().toString(), 
+            settings.classpathFilePath.toString());
         Assert.assertEquals(REPO, settings.repoName);
-        Assert.assertEquals(PATH, settings.repoPath);
-        Assert.assertEquals(RunSettings.DEFAULT_OUTPUT_NAME, settings.dependencyXmlName);
+        Assert.assertEquals(Path.of(PATH).toAbsolutePath().toString(), 
+            settings.repoPath.toString());
+        Assert.assertEquals(Path.of(RunSettings.DEFAULT_OUTPUT_NAME).toAbsolutePath().toString(), 
+            settings.dependencyXmlName.toString());
     }
 
     @Test
@@ -58,9 +66,12 @@ public class ArgParserTest {
         final String OUTPUT = "out";
         String[] input = {"-i", INPUT, "-n", REPO, "-p", PATH, "-o", OUTPUT};
         RunSettings settings = ArgParser.parse(input);
-        Assert.assertEquals(INPUT, settings.classpathFilePath);
+        Assert.assertEquals(Path.of(INPUT).toAbsolutePath().toString(), 
+            settings.classpathFilePath.toString());
         Assert.assertEquals(REPO, settings.repoName);
-        Assert.assertEquals(PATH, settings.repoPath);
-        Assert.assertEquals(OUTPUT, settings.dependencyXmlName);
+        Assert.assertEquals(Path.of(PATH).toAbsolutePath().toString(), 
+            settings.repoPath.toString());
+        Assert.assertEquals(Path.of(OUTPUT).toAbsolutePath().toString(), 
+            settings.dependencyXmlName.toString());
     }
 }

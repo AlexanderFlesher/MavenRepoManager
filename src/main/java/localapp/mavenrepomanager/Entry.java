@@ -6,8 +6,8 @@ import java.nio.file.Path;
  * Abstraction of an entry in a Maven Repository. It must have an artifact,
  * a groupId, and a version number.
  */
-public final class Entry{
-    public enum Option{
+public final class Entry extends DebugOptions{
+    public static enum Option{
         /**No options selected. Method will function normally. */
         NONE,
         /**Debug selected, which will ignore IllegalArgumentException when trying

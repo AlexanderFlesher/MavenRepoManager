@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * <br/><br/>
  * Attributes described: ArtifactId, GroupId, Version, Last Updated Date
  */
-public class Metadata {
+public class Metadata extends DebugOptions{
     public final static String DEFAULT_NAME = "maven-metadata-local.xml";
     public final String filename;
     private Document document;
@@ -45,7 +45,6 @@ public class Metadata {
     public Metadata(Entry entry, Path location) throws IllegalArgumentException{
         this.entry = entry;
         this.location = location;
-        validateLocation(location);
         this.filename = Path.of(this.location.toString(), DEFAULT_NAME).toString();
     }
 
@@ -61,10 +60,17 @@ public class Metadata {
 
     /**
      * Writes the xml document to the specified location.
+     * @param options provides a way to pass a debug flag so that the directory 
+     * will not really be written to the filesystem. Used for testing.
      * @throws IOException
      */
-    public void write() throws IOException{
+    public void write(Option... options) throws IOException{
         Document doc = getDocument();
+        validateLocation(this.location);
+        for (Option option : options){
+            if (option.equals(Option.DEBUG))
+                return;
+        }
         writeDocument(doc);
     }
 
@@ -149,9 +155,11 @@ public class Metadata {
 
     private void validateLocation(Path location) {
         if (!location.toFile().isDirectory())
-            throw new IllegalArgumentException("The given path is not a directory."); 
+            throw new IllegalArgumentException(
+                String.format("The given path \'%s\' is not a directory.", location.toString())); 
         if (!location.toFile().exists())
-            throw new IllegalArgumentException("The given path does not exist.");
+            throw new IllegalArgumentException(
+                String.format("The given path \'%s\' does not exist.", location.toString()));
     }
     
     private void writeDocument(Document doc) throws IOException {

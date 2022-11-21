@@ -1,6 +1,7 @@
 package localapp.mavenrepomanager;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,13 +23,14 @@ public final class ArgParser {
      * or when any argument text is invalid.
      */
     public static RunSettings parse(List<String> args) throws IllegalArgumentException{
-        String classpathPath, outputFile, repoName, repoPath;
+        String repoName;
+        Path classpathPath, outputFile, repoPath;
         validateArguments(args);        
-        outputFile = fillOutputName(args);
-        classpathPath = getArgumentText(args, REQUIRED_CLASSPATH_PATH_SWITCH);
+        outputFile = Path.of(fillOutputName(args)).toAbsolutePath();
+        classpathPath = Path.of(getArgumentText(args, REQUIRED_CLASSPATH_PATH_SWITCH)).toAbsolutePath();
         repoName = getArgumentText(args, REQUIRED_REPO_NAME_SWITCH);
-        repoPath = getArgumentText(args, REQUIRED_REPO_PATH_SWITCH);
-        if (!outputFile.equals(""))
+        repoPath = Path.of(getArgumentText(args, REQUIRED_REPO_PATH_SWITCH)).toAbsolutePath();
+        if (!isBlank(outputFile))
             return new RunSettings(classpathPath, outputFile, repoName, repoPath);
         else 
             return new RunSettings(classpathPath, repoName, repoPath);
@@ -113,6 +115,10 @@ public final class ArgParser {
 
     private static boolean hasOptionalArgs(List<String> args){
         return args.contains(OPTIONAL_OUTPUT_NAME_SWITCH);
+    }
+
+    private static boolean isBlank(Path outputFile) {
+        return outputFile.toString().equals(Path.of("").toAbsolutePath().toString());
     }
 
     private static boolean isSwitchCharacter(String s){

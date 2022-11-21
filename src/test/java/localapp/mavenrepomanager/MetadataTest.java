@@ -6,21 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
 
+import localapp.mavenrepomanager.DebugOptions.Option;
+
 public class MetadataTest {
-    @Test
-    public void metadata_shouldExcept_whenFilenameGiven(){
-        Entry entry = new Entry("x", "y", "z", "./");
-        Path invalidPath = Path.of("/path/to/file.xml");
-        Assert.assertThrows(IllegalArgumentException.class, () -> new Metadata(entry, invalidPath));
-    }
-
-    @Test
-    public void metadata_shouldExcept_whenBlankPathGiven(){
-        Entry entry = new Entry("x", "y", "z", "./");
-        Path invalidPath = Path.of("");
-        Assert.assertThrows(IllegalArgumentException.class, () -> new Metadata(entry, invalidPath));
-    }
-
     @Test
     public void filename_shouldPopulateWithPath(){
         final String PATH = "./";
@@ -51,5 +39,21 @@ public class MetadataTest {
         Assert.assertEquals("version", versionChildren.item(1).getChildNodes().item(0).getNodeName());
         Assert.assertEquals(VERSION, versionChildren.item(1).getChildNodes().item(0).getTextContent());
         Assert.assertEquals("lastUpdated", versionChildren.item(2).getNodeName());
+    }
+
+    @Test
+    public void write_shouldExcept_whenFilenameGiven(){
+        Entry entry = new Entry("x", "y", "z", "./");
+        Path invalidPath = Path.of("/path/to/file.xml");
+        Metadata metadata = new Metadata(entry, invalidPath);
+        Assert.assertThrows(IllegalArgumentException.class, () -> metadata.write(Option.DEBUG));
+    }
+
+    @Test
+    public void write_shouldExcept_whenBlankPathGiven(){
+        Entry entry = new Entry("x", "y", "z", "./");
+        Path invalidPath = Path.of("");
+        Metadata metadata = new Metadata(entry, invalidPath);
+        Assert.assertThrows(IllegalArgumentException.class, () -> metadata.write(Option.DEBUG));
     }
 }
