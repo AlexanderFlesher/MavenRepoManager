@@ -2,20 +2,14 @@ package localapp.mavenrepomanager;
 
 import java.nio.file.Path;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
  * Abstraction of an entry in a Maven Repository. It must have an artifact,
  * a groupId, and a version number.
  */
 public final class Entry extends DebugOptions{
-    public static enum Option{
-        /**No options selected. Method will function normally. */
-        NONE,
-        /**Debug selected, which will ignore IllegalArgumentException when trying
-         * to parse files that do not exist. Use this for testing purposes.
-         */
-        DEBUG
-    }
-
     public static final String DEFAULT_VERSION = "1.0";
 
     private String artifact;
@@ -137,6 +131,17 @@ public final class Entry extends DebugOptions{
         return node;
     }
 
+    /**
+     * @return an XML element populated with the Entry metadata
+     */
+    public Element toXml(Document doc){
+        Element dependency = doc.createElement("dependency");
+        dependency.appendChild(getGroupElement(doc));
+        dependency.appendChild(getArtifactElement(doc));
+        dependency.appendChild(getVersionElement(doc));
+        return dependency;
+    }
+
     private static boolean beginsWithNumber(String s){
         return s.charAt(0) >= '0' && s.charAt(0) <= '9';
     }
@@ -148,6 +153,24 @@ public final class Entry extends DebugOptions{
         artifact = parseArtifact(file.toString(), version);
         group = artifact;
         return new Entry(artifact, group, version, defaultFilename);
+    }
+
+    private Element getArtifactElement(Document doc){
+        Element element = doc.createElement("artifactId");
+        element.appendChild(doc.createTextNode(this.artifact));
+        return element;
+    }
+
+    private Element getGroupElement(Document doc){
+        Element element = doc.createElement("groupId");
+        element.appendChild(doc.createTextNode(this.group));
+        return element;
+    }
+
+    private Element getVersionElement(Document doc){
+        Element element = doc.createElement("version");
+        element.appendChild(doc.createTextNode(this.version));
+        return element;
     }
 
     private static String parseArtifact(String name, String version){

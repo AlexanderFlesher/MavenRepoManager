@@ -37,6 +37,10 @@ public final class Repository {
         addEntry(new Entry(artifact, group, version, filename));
     }
 
+    public Entry[] getClasspathEntries(){
+        return this.classpathEntries.toArray(new Entry[classpathEntries.size()]);
+    }
+
     public String getName(){
         return this.name;
     }

@@ -37,9 +37,7 @@ public class Dependency {
             this.dependencyFile.toPath().getFileName().toString());
         try (FileReader reader = new FileReader(this.dependencyFile)){
             try (FileWriter writer = new FileWriter(newfile.toFile())){
-                while (reader.ready()){
-                    writer.write(reader.read());
-                }
+                reader.transferTo(writer);
             }
         }
     }

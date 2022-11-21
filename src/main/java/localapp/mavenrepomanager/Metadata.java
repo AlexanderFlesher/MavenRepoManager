@@ -1,22 +1,10 @@
 package localapp.mavenrepomanager;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,7 +16,7 @@ import org.w3c.dom.Element;
  * <br/><br/>
  * Attributes described: ArtifactId, GroupId, Version, Last Updated Date
  */
-public class Metadata extends DebugOptions{
+public class Metadata extends XmlWriter {
     public final static String DEFAULT_NAME = "maven-metadata-local.xml";
     public final String filename;
     private Document document;
@@ -71,12 +59,11 @@ public class Metadata extends DebugOptions{
             if (option.equals(Option.DEBUG))
                 return;
         }
-        writeDocument(doc);
+        writeDocument(doc, this.filename);
     }
 
     private Document createDocument() {
-        DocumentBuilder db = getDocumentBuilder();
-        Document doc = db.newDocument();
+        Document doc = getDocumentBuilder().newDocument();
         Element root = doc.createElement("metadata");
         root.appendChild(getGroupNode(doc));
         root.appendChild(getArtifactNode(doc));
@@ -89,18 +76,6 @@ public class Metadata extends DebugOptions{
         Element artifactIdNode = doc.createElement("artifactId");
         artifactIdNode.appendChild(doc.createTextNode(this.entry.getArtifact()));
         return artifactIdNode;
-    }
-
-    private DocumentBuilder getDocumentBuilder(){
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db;
-        try {
-            db = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return db;
     }
 
     private Element getGroupNode(Document doc) {
@@ -123,20 +98,6 @@ public class Metadata extends DebugOptions{
         return releaseNode;
     }
 
-    private Transformer getTransformer(){
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer;
-        try {
-            transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return transformer;
-    }
-
     private Element getVersioningNode(Document doc){
         Element versioningNode = doc.createElement("versioning");
         versioningNode.appendChild(getReleaseNode(doc));
@@ -151,28 +112,5 @@ public class Metadata extends DebugOptions{
         versionNode.appendChild(doc.createTextNode(this.entry.getVersion()));
         versionsNode.appendChild(versionNode);
         return versionsNode;
-    }
-
-    private void validateLocation(Path location) {
-        if (!location.toFile().isDirectory())
-            throw new IllegalArgumentException(
-                String.format("The given path \'%s\' is not a directory.", location.toString())); 
-        if (!location.toFile().exists())
-            throw new IllegalArgumentException(
-                String.format("The given path \'%s\' does not exist.", location.toString()));
-    }
-    
-    private void writeDocument(Document doc) throws IOException {
-        Transformer transformer = getTransformer();
-        DOMSource source = new DOMSource(doc);
-        FileWriter writer 
-            = new FileWriter(Path.of(this.filename).toFile());
-        StreamResult result = new StreamResult(writer);
-
-        try {
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
     }
 }

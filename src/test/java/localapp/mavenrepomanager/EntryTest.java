@@ -4,10 +4,9 @@ import java.nio.file.Path;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.w3c.dom.Element;
 
-import localapp.mavenrepomanager.Entry.Option;
-
-public class EntryTest {
+public class EntryTest extends XmlWriter{
     @Test
     public void from_shouldParse_withoutVersion() {
         final String NAME = "test-library";
@@ -98,6 +97,19 @@ public class EntryTest {
         Assert.assertEquals(ARTIFACT, node.getName());
         node = next(node);
         Assert.assertEquals(VERSION, node.getName());
+    }
+
+    @Test
+    public void toXml_shouldReturnFormattedData() {
+        final String ARTIFACT = "artifact";
+        final String GROUP = "group";
+        final String VERSION = "1.4";
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Element xml = entry.toXml(getDocumentBuilder().newDocument());
+        Assert.assertEquals("dependency", xml.getNodeName());
+        Assert.assertEquals(GROUP, xml.getElementsByTagName("groupId").item(0).getTextContent());
+        Assert.assertEquals(ARTIFACT, xml.getElementsByTagName("artifactId").item(0).getTextContent());
+        Assert.assertEquals(VERSION, xml.getElementsByTagName("version").item(0).getTextContent());
     }
 
     private DirNode next(DirNode node){
