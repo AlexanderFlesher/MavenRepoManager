@@ -24,10 +24,8 @@ public class PomDeps extends XmlWriter {
             if (option.equals(Option.DEBUG))
                 return;
         }
-        writeDocument(doc, this.settings.dependencyXmlName,
-        (file) -> {
-            tryFormatOutputFile(file);
-        });
+        writeDocument(doc, this.settings.dependencyXmlName);
+        tryFormatOutputFile(this.settings.dependencyXmlName);
     }
 
     private void appendComments(Document doc, String... comments){

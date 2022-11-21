@@ -3,7 +3,6 @@ package localapp.mavenrepomanager;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Consumer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,18 +57,6 @@ public abstract class XmlWriter extends DebugOptions{
 
     protected void writeDocument(Document doc, String filename) throws IOException {
         writeDocument(doc, Path.of(filename));
-    }
-
-    protected void writeDocument(Document doc, Path filename, Consumer<Path> formatter) 
-        throws IOException {
-        writeDocument(doc, filename);
-        formatter.accept(filename);
-    }
-
-    protected void writeDocument(Document doc, String filename, Consumer<String> formatter) 
-        throws IOException {
-        writeDocument(doc, Path.of(filename));
-        formatter.accept(filename);
     }
 
     private Transformer getTransformer(){
