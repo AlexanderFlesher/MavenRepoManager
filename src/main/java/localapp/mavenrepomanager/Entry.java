@@ -1,5 +1,6 @@
 package localapp.mavenrepomanager;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import org.w3c.dom.Document;
@@ -51,7 +52,7 @@ public final class Entry extends DebugOptions{
                 return from(filename);
             }
             catch (IllegalArgumentException ex){
-                return debugFrom(filename, "./");        
+                return debugFrom(filename, "." + File.separatorChar);        
             }
         }
         else 

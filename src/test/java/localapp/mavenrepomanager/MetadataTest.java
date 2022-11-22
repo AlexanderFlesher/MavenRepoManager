@@ -1,5 +1,6 @@
 package localapp.mavenrepomanager;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import org.junit.Assert;
@@ -12,7 +13,7 @@ public class MetadataTest {
     @Test
     public void filename_shouldPopulateWithPath(){
         final String PATH = "./";
-        Entry entry = new Entry("x", "y", "z", "./");
+        Entry entry = new Entry("x", "y", "z", "." + File.separatorChar);
         Path path = Path.of(PATH);
         Metadata metadata = new Metadata(entry, path);
         Assert.assertEquals(PATH + Metadata.DEFAULT_NAME, metadata.filename);
@@ -23,8 +24,8 @@ public class MetadataTest {
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
         final String VERSION = "1.4";
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
-        Metadata metadata = new Metadata(entry, Path.of("./"));
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "." + File.separatorChar);
+        Metadata metadata = new Metadata(entry, Path.of("." + File.separatorChar));
         NodeList children = metadata.getDocument().getDocumentElement().getChildNodes();
         NodeList versionChildren = children.item(2).getChildNodes();
         Assert.assertEquals("metadata", metadata.getDocument().getDocumentElement().getTagName());
@@ -43,7 +44,7 @@ public class MetadataTest {
 
     @Test
     public void write_shouldExcept_whenFilenameGiven(){
-        Entry entry = new Entry("x", "y", "z", "./");
+        Entry entry = new Entry("x", "y", "z", "." + File.separatorChar);
         Path invalidPath = Path.of("/path/to/file.xml");
         Metadata metadata = new Metadata(entry, invalidPath);
         Assert.assertThrows(IllegalArgumentException.class, () -> metadata.write(Option.DEBUG));
@@ -51,7 +52,7 @@ public class MetadataTest {
 
     @Test
     public void write_shouldExcept_whenBlankPathGiven(){
-        Entry entry = new Entry("x", "y", "z", "./");
+        Entry entry = new Entry("x", "y", "z", "." + File.separatorChar);
         Path invalidPath = Path.of("");
         Metadata metadata = new Metadata(entry, invalidPath);
         Assert.assertThrows(IllegalArgumentException.class, () -> metadata.write(Option.DEBUG));

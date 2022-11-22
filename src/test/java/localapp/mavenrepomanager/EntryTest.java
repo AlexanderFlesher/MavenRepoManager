@@ -1,5 +1,6 @@
 package localapp.mavenrepomanager;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import org.junit.Assert;
@@ -33,7 +34,7 @@ public class EntryTest extends XmlWriter{
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
         final String VERSION = "1.4";
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "." + File.separatorChar);
         Path path = entry.getDependencyLocation();
         Assert.assertEquals(Path.of(GROUP, ARTIFACT, VERSION), path);
     }
@@ -44,7 +45,7 @@ public class EntryTest extends XmlWriter{
         final String GROUP = "com.complicated.group";
         final String VERSION = "1.4";
         final String[] SPLIT = GROUP.split("\\.");
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "." + File.separatorChar);
         Path path = entry.getDependencyLocation();
         Assert.assertEquals(Path.of(SPLIT[0], SPLIT[1], SPLIT[2], ARTIFACT, VERSION), path);
     }
@@ -53,7 +54,7 @@ public class EntryTest extends XmlWriter{
     public void getMetadataLocation_hasCorrectStructure_simpleGroup(){
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
-        Entry entry = new Entry(ARTIFACT, GROUP, "1.0", "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, "1.0", "." + File.separatorChar);
         Path path = entry.getMetadataLocation();
         Assert.assertEquals(Path.of(GROUP, ARTIFACT), path);
     }
@@ -63,7 +64,7 @@ public class EntryTest extends XmlWriter{
         final String ARTIFACT = "artifact";
         final String GROUP = "com.complicated.group";
         final String[] SPLIT = GROUP.split("\\.");
-        Entry entry = new Entry(ARTIFACT, GROUP, "1.0", "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, "1.0", "." + File.separatorChar);
         Path path = entry.getMetadataLocation();
         Assert.assertEquals(Path.of(SPLIT[0], SPLIT[1], SPLIT[2], ARTIFACT), path);
     }
@@ -73,7 +74,7 @@ public class EntryTest extends XmlWriter{
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
         final String VERSION = "1.4";
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "." + File.separatorChar);
         DirNode node = entry.toNode();
         Assert.assertEquals(GROUP, node.getName());
         Assert.assertEquals(ARTIFACT, node.getChildren().get(0).getName());
@@ -86,7 +87,7 @@ public class EntryTest extends XmlWriter{
         final String GROUP = "com.complicated.group";
         final String VERSION = "1.4";
         final String[] SPLIT = GROUP.split("\\.");
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "." + File.separatorChar);
         DirNode node = entry.toNode();
         Assert.assertEquals(SPLIT[0], node.getName());
         node = next(node);
@@ -104,7 +105,7 @@ public class EntryTest extends XmlWriter{
         final String ARTIFACT = "artifact";
         final String GROUP = "group";
         final String VERSION = "1.4";
-        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "./");
+        Entry entry = new Entry(ARTIFACT, GROUP, VERSION, "." + File.separatorChar);
         Element xml = entry.toXml(getDocumentBuilder().newDocument());
         Assert.assertEquals("dependency", xml.getNodeName());
         Assert.assertEquals(GROUP, xml.getElementsByTagName("groupId").item(0).getTextContent());
