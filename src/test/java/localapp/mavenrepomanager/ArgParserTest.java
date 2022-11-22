@@ -1,5 +1,6 @@
 package localapp.mavenrepomanager;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import org.junit.Assert;
@@ -72,6 +73,24 @@ public class ArgParserTest {
         Assert.assertEquals(Path.of(PATH).toAbsolutePath().toString(), 
             settings.repoPath.toString());
         Assert.assertEquals(Path.of(OUTPUT).toAbsolutePath().toString(), 
+            settings.dependencyXmlName.toString());
+    }
+
+    @Test
+    public void parse_shouldParseArgText_optionalArgPathOnly() {
+        final String INPUT = "input";
+        final String REPO = "repo name";
+        final String PATH = "repo path";
+        final String OUTPUT = "." + File.separatorChar;
+        String[] input = {"-i", INPUT, "-n", REPO, "-p", PATH, "-o", OUTPUT};
+        RunSettings settings = ArgParser.parse(input);
+        Assert.assertEquals(Path.of(INPUT).toAbsolutePath().toString(), 
+            settings.classpathFilePath.toString());
+        Assert.assertEquals(REPO, settings.repoName);
+        Assert.assertEquals(Path.of(PATH).toAbsolutePath().toString(), 
+            settings.repoPath.toString());
+        Assert.assertEquals(Path.of(OUTPUT, 
+            RunSettings.DEFAULT_OUTPUT_NAME).toAbsolutePath().toString(), 
             settings.dependencyXmlName.toString());
     }
 }

@@ -25,13 +25,13 @@ public final class ArgParser {
     public static RunSettings parse(List<String> args) throws IllegalArgumentException{
         String repoName;
         Path classpathPath, outputFile, repoPath;
-        validateArguments(args);        
-        outputFile = Path.of(fillOutputName(args)).toAbsolutePath();
+        validateArguments(args);
+        outputFile = Path.of(getArgumentText(args, OPTIONAL_OUTPUT_NAME_SWITCH)).toAbsolutePath();
         classpathPath = Path.of(getArgumentText(args, REQUIRED_CLASSPATH_PATH_SWITCH)).toAbsolutePath();
         repoName = getArgumentText(args, REQUIRED_REPO_NAME_SWITCH);
         repoPath = Path.of(getArgumentText(args, REQUIRED_REPO_PATH_SWITCH)).toAbsolutePath();
         if (!isBlank(outputFile))
-            return new RunSettings(classpathPath, outputFile, repoName, repoPath);
+            return new RunSettings(classpathPath, getOutputName(outputFile), repoName, repoPath);
         else 
             return new RunSettings(classpathPath, repoName, repoPath);
     }
@@ -81,25 +81,11 @@ public final class ArgParser {
         checkArgument(args, REQUIRED_REPO_PATH_SWITCH);
     }
 
-    private static String fillOutputName(List<String> args){
-        File out;
-        String name = "";
-        String path = "";
-        if (!hasOptionalArgs(args))
-            return "";
-        out = new File(getArgumentText(args, OPTIONAL_OUTPUT_NAME_SWITCH));
-        if (out.isDirectory()){
-            name = RunSettings.DEFAULT_OUTPUT_NAME;
-            path = out.toPath().toString();
-        }
-        else {
-            name = out.getPath();
-        }
-        return path + name;
-    }
-
     private static String getArgumentText(List<String> args, String arg){
-        return args.get(args.indexOf(arg) + 1);
+        int index = args.indexOf(arg);
+        if (index < 0)
+            return "";
+        return args.get(index + 1);
     }
 
     private static List<String> getMissingArgs(List<String> args){
@@ -111,6 +97,13 @@ public final class ArgParser {
         if (!args.contains(REQUIRED_REPO_PATH_SWITCH))
             missing.add(REQUIRED_REPO_PATH_SWITCH);
         return missing;
+    }
+
+    private static Path getOutputName(Path outputFile){
+        Path res = outputFile;
+        if (outputFile.toFile().isDirectory())
+            res = Path.of(outputFile.toString(), RunSettings.DEFAULT_OUTPUT_NAME);
+        return res;
     }
 
     private static boolean hasOptionalArgs(List<String> args){
