@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class PomDeps extends XmlWriter {
+    Document document;
     Entry[] entries;
     RunSettings settings;
     
@@ -17,8 +18,14 @@ public class PomDeps extends XmlWriter {
         this.settings = settings;
     }
 
+    public Document getDocument(){
+        if (this.document == null)
+            this.document = createDocument();
+        return this.document;
+    }
+
     public void write(Option... options) throws IOException{
-        Document doc = createDocument();
+        Document doc = getDocument();
         validateLocation(this.settings.dependencyXmlName.getParent());
         for (Option option : options){
             if (option.equals(Option.DEBUG))
@@ -79,6 +86,7 @@ public class PomDeps extends XmlWriter {
     private Element getUrlElement(Document doc){
         Element url = doc.createElement("url");
         url.appendChild(doc.createTextNode(
+            "file://" +
             Path.of(this.settings.repoPath.toString(), this.settings.repoName).toString()));
         return url;
     }
