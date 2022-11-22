@@ -12,7 +12,7 @@ import localapp.mavenrepomanager.DebugOptions.Option;
 public class MetadataTest {
     @Test
     public void filename_shouldPopulateWithPath(){
-        final String PATH = "./";
+        final String PATH = "." + File.separatorChar;
         Entry entry = new Entry("x", "y", "z", "." + File.separatorChar);
         Path path = Path.of(PATH);
         Metadata metadata = new Metadata(entry, path);
