@@ -31,7 +31,7 @@ public final class Entry extends DebugOptions{
      * @param filename
      * @return an Entry based on the filename from the classpath entry.
      */
-    public static Entry from(String filename){
+    public static Entry from(String filename) throws IllegalArgumentException{
         String artifact, group, version;
         Path file = Path.of(filename).getFileName();
         version = parseVersion(file.toString());

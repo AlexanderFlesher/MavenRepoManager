@@ -25,7 +25,12 @@ public final class Repository {
     public Repository(String name, ClasspathFile file){
         this(name);
         for (String path : file.getClasspathEntries().get("lib")){
-            addEntry(Entry.from(path));
+            try{
+                addEntry(Entry.from(path));
+            }
+            catch (IllegalArgumentException ex){
+                System.out.println(ex.getMessage());
+            }
         }
     }
     

@@ -16,7 +16,8 @@ public class Dependency {
     public Dependency(File file) throws IllegalArgumentException{
         this.dependencyFile = file; 
         if (!validate(this.dependencyFile))
-            throw new IllegalArgumentException(String.format("Provided file does not exist."));
+            throw new IllegalArgumentException(
+                String.format("Listed classpath dependency \'%s\' does not exist.", file.toPath().toString()));
     }
 
     public Dependency(Path file) throws IllegalArgumentException{
