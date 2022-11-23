@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class MavenArgs {
     protected enum OperatingSystem{
@@ -24,8 +25,8 @@ public final class MavenArgs {
     
     public static String[] from(Entry entry, RunSettings settings){
         List<String> args = new ArrayList<>();
-        if (prependOsArgs(getOperatingSystem()) != "") 
-            args.add(prependOsArgs(getOperatingSystem()));
+        args.addAll(prependOsArgs(getOperatingSystem())
+            .stream().filter(s -> !s.isBlank()).collect(Collectors.toList()));
         args.add(maven);
         args.add(command);
         args.add(packaging);
@@ -59,17 +60,18 @@ public final class MavenArgs {
         return maven;
     }
 
-    protected static String prependOsArgs(OperatingSystem system){
-        String result;
+    protected static List<String> prependOsArgs(OperatingSystem system){
+        List<String> result = new ArrayList<>();
         switch(system){
             case UNIX:
-                result = "";
+                result.add("");
                 break;
             case WINDOWS:
-                result = "cmd /C";
+                result.add("cmd"); 
+                result.add("/C");
                 break;
             default:
-                result = "";
+                result.add("");
                 break;
         }
         return result;

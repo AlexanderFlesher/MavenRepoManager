@@ -2,6 +2,7 @@ package localapp.mavenrepomanager;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,9 +22,10 @@ public class MavenArgsTest {
         final RunSettings settings = new RunSettings(Path.of(INPUT), Path.of(OUTPUT), REPO, Path.of(PATH));
         final Entry entry = new Entry(ARTIFACT, GROUP, VERSION, OUTPUT);
         final String[] args = MavenArgs.from(entry, settings);
+        final List<String> preArgs = MavenArgs.prependOsArgs(MavenArgs.getOperatingSystem());
         final String command = String.format(
             "%s org.apache.maven.plugins:maven-install-plugin:2.4:install-file -Dpackaging=jar -Dfile=%s -DgroupId=%s -DartifactId=%s -Dversion=%s -DlocalRepositoryPath=%s -X",
-            MavenArgs.prependOsArgs(MavenArgs.getOperatingSystem()) + " " + MavenArgs.resolveMvn("mvn"),
+            concat(preArgs.toArray(new String[preArgs.size()])) + " " + MavenArgs.resolveMvn("mvn"),
             Path.of(OUTPUT).toString(),
             GROUP,
             ARTIFACT,
@@ -34,14 +36,24 @@ public class MavenArgsTest {
             argString += arg + " ";
         }
         argString = argString.trim();
-        Assert.assertEquals(command, argString);
+        Assert.assertEquals(command.trim(), argString);
     }
 
     @Test
     public void prependOsArgs_shouldMatchOs(){
         final String UNIX_ARGS = "";
         final String WIN_ARGS = "cmd /C";
-        Assert.assertEquals(UNIX_ARGS, MavenArgs.prependOsArgs(OperatingSystem.UNIX));
-        Assert.assertEquals(WIN_ARGS, MavenArgs.prependOsArgs(OperatingSystem.WINDOWS));
+        final List<String> TEST_UNIX = MavenArgs.prependOsArgs(OperatingSystem.UNIX);
+        final List<String> TEST_WIN = MavenArgs.prependOsArgs(OperatingSystem.WINDOWS);
+        Assert.assertEquals(UNIX_ARGS, concat(TEST_UNIX.toArray(new String[TEST_UNIX.size()])));
+        Assert.assertEquals(WIN_ARGS, concat(TEST_WIN.toArray(new String[TEST_WIN.size()])));
+    }
+
+    private String concat(String... strings){
+        String res = "";
+        for (String string : strings){
+            res += string + " ";
+        }
+        return res.trim();
     }
 }
