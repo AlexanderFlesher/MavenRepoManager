@@ -3,7 +3,9 @@ package localapp.mavenrepomanager;
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class MavenArgs {
     protected enum OperatingSystem{
@@ -21,18 +23,20 @@ public final class MavenArgs {
     private final static String repoPath = "-DlocalRepositoryPath=%s";
     
     public static String[] from(Entry entry, RunSettings settings){
-        String[] args = new String[9];
-        args[0] = maven;
-        args[1] = command;
-        args[2] = packaging;
-        args[3] = String.format(file, entry.getDependency().getPath().toString());
-        args[4] = String.format(group, entry.getGroup());
-        args[5] = String.format(artifact, entry.getArtifact());
-        args[6] = String.format(version, entry.getVersion());
-        args[7] = String.format(repoPath, 
-            Path.of(settings.repoPath.toString(), settings.repoName).toString());
-        args[8] = "-X";
-        return args;
+        List<String> args = new ArrayList<>();
+        if (prependOsArgs(getOperatingSystem()) != "") 
+            args.add(prependOsArgs(getOperatingSystem()));
+        args.add(maven);
+        args.add(command);
+        args.add(packaging);
+        args.add(String.format(file, entry.getDependency().getPath().toString()));
+        args.add(String.format(group, entry.getGroup()));
+        args.add(String.format(artifact, entry.getArtifact()));
+        args.add(String.format(version, entry.getVersion()));
+        args.add(String.format(repoPath, 
+            Path.of(settings.repoPath.toString(), settings.repoName).toString()));
+        args.add("-X");
+        return args.toArray(new String[args.size()]);
     }
 
     protected static OperatingSystem getOperatingSystem(){
@@ -49,11 +53,10 @@ public final class MavenArgs {
                         return combined.toString();
                 }
                 catch (InvalidPathException ex){
-                    ex.printStackTrace();
                 }
             }
         }
-        return prependOsArgs(getOperatingSystem()) + maven;
+        return maven;
     }
 
     protected static String prependOsArgs(OperatingSystem system){
