@@ -20,7 +20,8 @@ public class MavenArgsTest {
         final Entry entry = new Entry(ARTIFACT, GROUP, VERSION, OUTPUT);
         final String[] args = MavenArgs.from(entry, settings);
         final String command = String.format(
-            "mvn org.apache.maven.plugins:maven-install-plugin:2.4:install-file -Dpackaging=jar -Dfile=%s -DgroupId=%s -DartifactId=%s -Dversion=%s -DlocalRepositoryPath=%s -X",
+            "%s org.apache.maven.plugins:maven-install-plugin:2.4:install-file -Dpackaging=jar -Dfile=%s -DgroupId=%s -DartifactId=%s -Dversion=%s -DlocalRepositoryPath=%s -X",
+            MavenArgs.resolveMvn("mvn"),
             Path.of(OUTPUT).toString(),
             GROUP,
             ARTIFACT,
