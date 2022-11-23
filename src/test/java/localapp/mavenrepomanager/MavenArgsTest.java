@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import org.junit.Assert;
 import org.junit.Test;
 
+import localapp.mavenrepomanager.MavenArgs.OperatingSystem;
+
 public class MavenArgsTest {
     @Test
     public void from_shouldParseData() {
@@ -33,5 +35,13 @@ public class MavenArgsTest {
         }
         argString = argString.trim();
         Assert.assertEquals(command, argString);
+    }
+
+    @Test
+    public void prependOsArgs_shouldMatchOs(){
+        final String UNIX_ARGS = "";
+        final String WIN_ARGS = "cmd /C ";
+        Assert.assertEquals(UNIX_ARGS, MavenArgs.prependOsArgs(OperatingSystem.UNIX));
+        Assert.assertEquals(WIN_ARGS, MavenArgs.prependOsArgs(OperatingSystem.WINDOWS));
     }
 }

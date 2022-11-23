@@ -5,7 +5,12 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-public class MavenArgs {
+public final class MavenArgs {
+    protected enum OperatingSystem{
+        UNIX,
+        WINDOWS
+    }
+
     private final static String maven = resolveMvn("mvn");
     private final static String command = "org.apache.maven.plugins:maven-install-plugin:2.4:install-file";
     private final static String file = "-Dfile=%s";
@@ -30,6 +35,10 @@ public class MavenArgs {
         return args;
     }
 
+    protected static OperatingSystem getOperatingSystem(){
+        return File.pathSeparatorChar == ';' ? OperatingSystem.WINDOWS : OperatingSystem.UNIX;
+    }
+
     protected static String resolveMvn(String maven){
         Collection<String> strings = System.getenv().values();
         for (String env : strings){
@@ -44,6 +53,22 @@ public class MavenArgs {
                 }
             }
         }
-        return maven;
+        return prependOsArgs(getOperatingSystem()) + maven;
+    }
+
+    protected static String prependOsArgs(OperatingSystem system){
+        String result;
+        switch(system){
+            case UNIX:
+                result = "";
+                break;
+            case WINDOWS:
+                result = "cmd /C ";
+                break;
+            default:
+                result = "";
+                break;
+        }
+        return result;
     }
 }
