@@ -43,6 +43,10 @@ public class Dependency {
         }
     }
 
+    public Path getPath(){
+        return dependencyFile.toPath();
+    }
+
     @Override
     public int hashCode() {
         return this.dependencyFile.toString().hashCode();

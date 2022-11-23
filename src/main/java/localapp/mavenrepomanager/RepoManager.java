@@ -8,7 +8,7 @@ public final class RepoManager implements IRunnable {
     public void run(RunSettings settings) {
         ClasspathFile file = new ClasspathFile(settings.classpathFilePath.toFile());
         Path absoluteName = Path.of(settings.repoPath.toString(), settings.repoName);
-        Repository repository = new Repository(absoluteName.toString(), file);
+        Repository repository = new RepositoryProcess(absoluteName.toString(), file);
         PomDeps depXml = new PomDeps(settings, repository.getClasspathEntries());
         try {
             repository.write();

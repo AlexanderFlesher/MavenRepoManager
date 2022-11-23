@@ -2,17 +2,21 @@ package localapp.mavenrepomanager;
 
 public class App 
 {
+    private static RunSettings settings = RunSettings.BLANK_SETTINGS;
+    public static RunSettings getSettings(){
+        return App.settings;    
+    }
+
     public static void main( String[] args )
     {
         IRunnable main;
-        RunSettings settings;
         try{
-            settings = ArgParser.parse(args);
+            App.settings = ArgParser.parse(args);
             main = new RepoManager();
         }
         catch (IllegalArgumentException ex){
             System.out.println(ex.getMessage());
-            settings = RunSettings.BLANK_SETTINGS;
+            App.settings = RunSettings.BLANK_SETTINGS;
             main = new Help();
         }
 

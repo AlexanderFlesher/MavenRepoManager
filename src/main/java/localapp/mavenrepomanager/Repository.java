@@ -9,7 +9,7 @@ import java.util.List;
  * An object representing the Repository directory structure constructed from the
  * classpath entries.
  */
-public final class Repository {
+public class Repository {
     private String name;
     private List<Entry> classpathEntries;
 

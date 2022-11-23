@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--This document is not intended as a standalone pom.xml file.-->
+<!--Copy this file's project tag contents into a working pom.xml under the project tag.-->
+<project>
+  <repositories>
+    <repository>
+      <id>test_repo</id>
+      <name>test_repo</name>
+      <url>file:///home/ale/Documents/test_repo</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>test</groupId>
+      <artifactId>test</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+</project>
