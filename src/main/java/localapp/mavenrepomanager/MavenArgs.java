@@ -66,7 +66,7 @@ public final class MavenArgs {
                 result = "";
                 break;
             case WINDOWS:
-                result = "cmd /C ";
+                result = "cmd /C";
                 break;
             default:
                 result = "";

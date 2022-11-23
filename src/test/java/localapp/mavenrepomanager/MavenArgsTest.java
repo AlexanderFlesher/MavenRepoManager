@@ -40,7 +40,7 @@ public class MavenArgsTest {
     @Test
     public void prependOsArgs_shouldMatchOs(){
         final String UNIX_ARGS = "";
-        final String WIN_ARGS = "cmd /C ";
+        final String WIN_ARGS = "cmd /C";
         Assert.assertEquals(UNIX_ARGS, MavenArgs.prependOsArgs(OperatingSystem.UNIX));
         Assert.assertEquals(WIN_ARGS, MavenArgs.prependOsArgs(OperatingSystem.WINDOWS));
     }
