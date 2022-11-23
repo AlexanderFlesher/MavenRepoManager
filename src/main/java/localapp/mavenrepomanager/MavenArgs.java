@@ -1,6 +1,7 @@
 package localapp.mavenrepomanager;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -33,9 +34,14 @@ public class MavenArgs {
         Collection<String> strings = System.getenv().values();
         for (String env : strings){
             for (String path : env.split(File.pathSeparator)){
-                Path combined = Path.of(path, maven);
-                if (combined.toFile().exists())
-                    return combined.toString();
+                try{
+                    Path combined = Path.of(path, maven);
+                    if (combined.toFile().exists())
+                        return combined.toString();
+                }
+                catch (InvalidPathException ex){
+                    ex.printStackTrace();
+                }
             }
         }
         return maven;
