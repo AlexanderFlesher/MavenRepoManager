@@ -14,8 +14,18 @@ public final class RepositoryProcess extends Repository {
     @Override
     public void write() throws IOException {
         for (Entry entry : getClasspathEntries()){
-            Process process = Runtime.getRuntime().exec(MavenArgs.from(entry, App.getSettings()));
+            String[] args = MavenArgs.from(entry, App.getSettings());
+            System.out.println(concat(args));
+            Process process = Runtime.getRuntime().exec(args);
             process.getInputStream().transferTo(System.out);
         }
+    }
+
+    private String concat(String[] strings){
+        String result = "";
+        for (String string : strings){
+            result += string + " ";
+        }
+        return result.trim();
     }
 }
