@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
  * a groupId, and a version number.
  */
 public final class Entry extends DebugOptions{
-    public static final String DEFAULT_VERSION = "1.0";
+    public static final String DEFAULT_VERSION = "local";
 
     private String artifact;
     private String group;
