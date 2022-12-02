@@ -9,6 +9,7 @@ public class App
 
     public static void main( String[] args )
     {
+        System.out.println(MavenArgs.getOperatingSystem());
         IRunnable main;
         try{
             App.settings = ArgParser.parse(args);
