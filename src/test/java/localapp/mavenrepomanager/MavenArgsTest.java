@@ -25,7 +25,7 @@ public class MavenArgsTest {
         final List<String> preArgs = MavenArgs.prependOsArgs(MavenArgs.getOperatingSystem());
         final String command = String.format(
             "%s org.apache.maven.plugins:maven-install-plugin:2.4:install-file -Dpackaging=jar -Dfile=%s -DgroupId=%s -DartifactId=%s -Dversion=%s -DlocalRepositoryPath=%s -X",
-            concat(preArgs.toArray(new String[preArgs.size()])) + " " + MavenArgs.resolveMvn("mvn"),
+            concat(preArgs.toArray(new String[preArgs.size()])) + " " + "mvn",
             Path.of(OUTPUT).toString(),
             GROUP,
             ARTIFACT,

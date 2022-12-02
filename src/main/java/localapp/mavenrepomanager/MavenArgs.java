@@ -1,10 +1,8 @@
 package localapp.mavenrepomanager;
 
 import java.io.File;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,7 @@ public final class MavenArgs {
         WINDOWS
     }
 
-    private final static String maven = resolveMvn("mvn");
+    private final static String maven = "mvn";
     private final static String command = "org.apache.maven.plugins:maven-install-plugin:2.4:install-file";
     private final static String file = "-Dfile=%s";
     private final static String group = "-DgroupId=%s";
@@ -42,22 +40,6 @@ public final class MavenArgs {
 
     protected static OperatingSystem getOperatingSystem(){
         return File.pathSeparatorChar == ';' ? OperatingSystem.WINDOWS : OperatingSystem.UNIX;
-    }
-
-    protected static String resolveMvn(String maven){
-        Collection<String> strings = System.getenv().values();
-        for (String env : strings){
-            for (String path : env.split(File.pathSeparator)){
-                try{
-                    Path combined = Path.of(path, maven);
-                    if (combined.toFile().exists())
-                        return combined.toString();
-                }
-                catch (InvalidPathException ex){
-                }
-            }
-        }
-        return maven;
     }
 
     protected static List<String> prependOsArgs(OperatingSystem system){
